@@ -57,10 +57,10 @@
 
 		<div class="row">
 			<div class="col-md-2"></div>
-			<div class="col-md-8">
+			<div class="col-md-8" id='$tmdb_table_container'>
 
-				<table border="0" cellpadding="0" cellspacing="0" id="tmdb_table" class="display"></table>
-			
+				<table id="tmdb_table" class="display"></table>
+
 			</div>
 			<div class="col-md-2"></div>
 		</div>		
@@ -73,8 +73,11 @@
 <script>
 
 var myTMDBKey = 'fb3a898f7095987835b1b2d87249cefb',
+	imgRoot = 'http://image.tmdb.org/t/p/',
 	maxAllowedHits = 400,
-	flix = []
+	flix = [],
+	flixCompl = [],
+	tmdbTable = ''	
 
 $(document).ready(function() {
 
@@ -87,47 +90,68 @@ $(document).ready(function() {
 		}
 	})
 
+/*	$('#title_input').focus(function() {
+		if ($.fn.DataTable.isDataTable('#tmpdb_table')) {
+			$("#tmdb_table").destroy()
+		}
+	})
+*/
+	$('#tmdb_table').on('click','a',function (e) {
+		alert(e)
+	})
+
 	$('#title_btn').click(function(e) {
 		var input = $('#title_input').val(),
 			pages = 0,
 			hits = 0,
 			url ='https://api.themoviedb.org/3/search/movie?query='+input+'&api_key='+myTMDBKey
 
-			$.get(url,function(data, status) {
-				pages = data.total_pages+1
-				hits  = data.total_results
-				if (hits > maxAllowedHits) {
-					alert('Search aborted. Over '+maxAllowedHits+' results returned. Try to narrow your search by being more specific.')
-				} else {
-
-					let len = data.results.length
-					while (len--) {
-						flix.push([
-							data.results[len].id, 
-							'<a href="">'+data.results[len].title+'</a>', 
-							data.results[len].genre_ids, 
-							data.results[len].release_date,
-							data.results[len].poster_path
-						])
-					}
-
-					$('#tmdb_table').show()
-					$('#tmdb_table').DataTable( {
-						data: flix,
-						columns: [
-							{ title: "Id" },
-					        { title: "Title" },
-					        { title: "Genre" },
-					        { title: "Release Date" },
-					        { title: "Poster" }
-						]
-					})					
-
-				}		
+		flix = []
+		flixCompl = []
 		
+//		$.fn.dataTable.ext.errMode = 'none'
 
+		if ($.fn.DataTable.isDataTable('#tmdb_table')) {
+			tmdbTable.destroy()
+		}
 
-			})	
+		$.get(url,function(data, status) {
+			pages = data.total_pages+1
+			hits  = data.total_results
+			if (hits > maxAllowedHits) {
+				alert('Search aborted. Over '+maxAllowedHits+' results returned. Try to narrow your search by being more specific.')
+			} else {
+				let len = data.results.length
+				while (len--) {
+					flix.push([
+						data.results[len].id, 
+						'<a href="#'+data.results[len].id+'">'+data.results[len].title+'</a>', 
+						data.results[len].genre_ids, 
+						data.results[len].release_date,
+						data.results[len].vote_average
+					])
+					flixCompl[data.results[len].id] = [
+						data.results[len].poster_path,
+						data.results[len].overview,
+						data.results[len].genre_ids,
+						data.results[len].release_date
+					]
+				}
+				$('#tmdb_table').show()
+				tmdbTable = $('#tmdb_table').DataTable( {
+					data: flix,
+					columns: [
+						{ title: "Id" },
+				        { title: "Title" },
+				        { title: "Genre" },
+				        { title: "Release Date" },
+				        { title: "Avg Vote" }
+					]
+				})					
+				console.log(flixCompl)
+			}		
+
+		})	
 			
 	})
 
