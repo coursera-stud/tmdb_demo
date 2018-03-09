@@ -10,6 +10,7 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <style>
 
 	body{font-family:'Special Elite';font-size:1.5em}
@@ -66,6 +67,9 @@
 
 	</div>	
 
+<div id="flix_dialog" style="display:none" title="Flix">Test</div>
+
+
 <script>
 
 var myTMDBKey = 'fb3a898f7095987835b1b2d87249cefb',
@@ -73,6 +77,15 @@ var myTMDBKey = 'fb3a898f7095987835b1b2d87249cefb',
 	flix = []
 
 $(document).ready(function() {
+
+	$('body').keydown(function(e) {
+		if (e.key == 'Enter' && $('#title_input').is(':focus')) {
+			$('#title_btn').click()
+		}
+		if (e.key == 'Enter' && $('#genre_input').is(':focus')) {
+			$('#genre_btn').click()
+		}
+	})
 
 	$('#title_btn').click(function(e) {
 		var input = $('#title_input').val(),
@@ -91,15 +104,12 @@ $(document).ready(function() {
 					while (len--) {
 						flix.push([
 							data.results[len].id, 
-							data.results[len].title, 
+							'<a href="">'+data.results[len].title+'</a>', 
 							data.results[len].genre_ids, 
 							data.results[len].release_date,
 							data.results[len].poster_path
 						])
 					}
-
-					console.log(flix.length)
-					console.log(flix)
 
 					$('#tmdb_table').show()
 					$('#tmdb_table').DataTable( {
@@ -108,7 +118,7 @@ $(document).ready(function() {
 							{ title: "Id" },
 					        { title: "Title" },
 					        { title: "Genre" },
-					        { title: "Year" },
+					        { title: "Release Date" },
 					        { title: "Poster" }
 						]
 					})					
