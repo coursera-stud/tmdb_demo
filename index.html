@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TMDB demo for Global Gaming</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Special+Elite">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/jquery.dataTables.min.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<style>
+
+	body{font-family:'Special Elite';font-size:1.5em}
+	input{height:27px}
+	button{margin-right:22px}
+	table{width:100%}
+	.nowrap{white-space:nowrap;}
+	.text-center{text-align:center}
+	#tmdb_table{display:none} 
+
+</style>
+</head>
+<body>
+
+	<div id="container">
+
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6 text-center">
+				<h2>TMDB demo for Global Gaming</h2>
+				<h4>Delivered by Kristoffer Hell</h4>
+			</div>	
+			<div class="col-md-3"></div>
+		</div>	
+
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-2 nowrap text-center">	
+				Search for title: 
+			</div>	
+			<div class="col-md-3 nowrap  text-center">	
+				<input id="title_input" type="text" /><button id="title_btn">go</button>
+			</div>	
+			<div class="col-md-2 nowrap text-center">	
+				Discover by genre: 
+			</div>	
+			<div class="col-md-3 nowrap text-center">	
+				<input id="genre_input" type="text" /><button id="genre_btn">go</button>
+			</div>
+			<div class="col-md-1"></div>
+		</div>	
+
+		<div class="row"><div class="col-md-12"><p>&nbsp;</p></div></div>
+
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+
+				<table border="0" cellpadding="0" cellspacing="0" id="tmdb_table" class="display"></table>
+			
+			</div>
+			<div class="col-md-2"></div>
+		</div>		
+
+	</div>	
+
+<script>
+
+var myTMDBKey = 'fb3a898f7095987835b1b2d87249cefb',
+	maxAllowedHits = 400,
+	flix = []
+
+$(document).ready(function() {
+
+	$('#title_btn').click(function(e) {
+		var input = $('#title_input').val(),
+			pages = 0,
+			hits = 0,
+			url ='https://api.themoviedb.org/3/search/movie?query='+input+'&api_key='+myTMDBKey
+
+			$.get(url,function(data, status) {
+				pages = data.total_pages+1
+				hits  = data.total_results
+				if (hits > maxAllowedHits) {
+					alert('Search aborted. Over '+maxAllowedHits+' results returned. Try to narrow your search by being more specific.')
+				} else {
+
+					let len = data.results.length
+					while (len--) {
+						flix.push([
+							data.results[len].id, 
+							data.results[len].title, 
+							data.results[len].genre_ids, 
+							data.results[len].release_date,
+							data.results[len].poster_path
+						])
+					}
+
+					console.log(flix.length)
+					console.log(flix)
+
+					$('#tmdb_table').show()
+					$('#tmdb_table').DataTable( {
+						data: flix,
+						columns: [
+							{ title: "Id" },
+					        { title: "Title" },
+					        { title: "Genre" },
+					        { title: "Year" },
+					        { title: "Poster" }
+						]
+					})					
+
+				}		
+		
+
+
+			})	
+			
+	})
+
+})
+
+</script>
+</body>
+</html>
+
