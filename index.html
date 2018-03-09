@@ -90,15 +90,16 @@ $(document).ready(function() {
 		}
 	})
 
-/*	$('#title_input').focus(function() {
-		if ($.fn.DataTable.isDataTable('#tmpdb_table')) {
-			$("#tmdb_table").destroy()
-		}
-	})
-*/
 	$('#tmdb_table').on('click','a',function (e) {
-		alert(e)
+		id = e.currentTarget.hash.substring(1)
+		// TODO: popup/overlay that shows poster and description for the movie with the id 
+		alert(flixCompl[id])
+		console.log(flixCompl[id])
 	})
+
+	$('#discover_btn').click(function(e) {
+		// TODO: implement solution for genre discovery 
+	})	
 
 	$('#title_btn').click(function(e) {
 		var input = $('#title_input').val(),
@@ -126,7 +127,7 @@ $(document).ready(function() {
 					flix.push([
 						data.results[len].id, 
 						'<a href="#'+data.results[len].id+'">'+data.results[len].title+'</a>', 
-						data.results[len].genre_ids, 
+						getGenres(data.results[len].genre_ids), 
 						data.results[len].release_date,
 						data.results[len].vote_average
 					])
@@ -156,6 +157,11 @@ $(document).ready(function() {
 	})
 
 })
+
+function getGenres(ids) {
+	// TODO: get genre names by list of ids
+	return ids
+}
 
 </script>
 </body>
