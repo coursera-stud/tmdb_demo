@@ -67,8 +67,7 @@
 
 	</div>	
 
-<div id="flix_dialog" style="display:none" title="Flix">Test</div>
-
+<div id="flix_dialog" title=""></div>
 
 <script>
 
@@ -77,9 +76,19 @@ var myTMDBKey = 'fb3a898f7095987835b1b2d87249cefb',
 	maxAllowedHits = 400,
 	flix = [],
 	flixCompl = [],
-	tmdbTable = ''	
+	tmdbTable = '',
+	genreUrl = 'https://api.themoviedb.org/3/genre/movie/list?api_key=fb3a898f7095987835b1b2d87249cefb',
+	genres = []	
 
 $(document).ready(function() {
+
+	// get genres and change into an assoc array: genres
+	$.get(genreUrl,function(data, status) {
+		let i = data.genres.length
+		while (i--) {
+			genres[data.genres[i].id] = data.genres[i].name	
+		}
+	})	
 
 	$('body').keydown(function(e) {
 		if (e.key == 'Enter' && $('#title_input').is(':focus')) {
@@ -92,9 +101,16 @@ $(document).ready(function() {
 
 	$('#tmdb_table').on('click','a',function (e) {
 		id = e.currentTarget.hash.substring(1)
+		$('#flix_dialog').attr('title',flixCompl[id].title)
+		$('#flix_dialog').html('<img src />nnnn')
+		$('#flix_dialog').text('nnnn')
+		$('#flix_dialog').show()
+		$('#flix_dialog').dialog()
+
+
 		// TODO: popup/overlay that shows poster and description for the movie with the id 
-		alert(flixCompl[id])
-		console.log(flixCompl[id])
+//		alert(flixCompl[id])
+//		console.log(flixCompl[id])
 	})
 
 	$('#discover_btn').click(function(e) {
@@ -145,7 +161,7 @@ $(document).ready(function() {
 						{ title: "Id" },
 				        { title: "Title" },
 				        { title: "Genre" },
-				        { title: "Release Date" },
+				        { title: "Release&nbsp;Date" },
 				        { title: "Avg Vote" }
 					]
 				})					
@@ -159,8 +175,13 @@ $(document).ready(function() {
 })
 
 function getGenres(ids) {
-	// TODO: get genre names by list of ids
-	return ids
+	let i = ids.length,
+		s = ''
+	while (i--) {
+		s += genres[ids[i]]
+		if (i > 0) s += ',' 
+	}	
+	return s
 }
 
 </script>
