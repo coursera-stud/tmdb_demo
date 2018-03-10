@@ -14,7 +14,7 @@
 <style>
 
 	body{font-family:'Special Elite';font-size:1.5em}
-	input{height:27px}
+	input{height:27px; width:240px;margin-left:15px;margin-bottom:12px}
 	button{margin-right:22px}
 	table{width:100%}
 	.nowrap{white-space:nowrap;}
@@ -23,6 +23,8 @@
 	#flix_overlay {position: fixed;display: none;width: 100%; height: 100%; top: 0; left: 0;right: 0;bottom: 0;background-color: rgba(0,0,0,0.7); z-index: 2; cursor: pointer}
 	#flix_data{ position: absolute;top: 50%;left: 50%;font-size:1.1em;color: white;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);text-align:center}
 	#flix_desc{text-align:left; padding-left:12px;}
+	#flix_close{margin-top:22px;text-align:center;font-size:1.5em}
+	#discover_by_genre{height:29px;width:270px}
 
 </style>
 </head>
@@ -40,19 +42,14 @@
 		</div>	
 
 		<div class="row">
-			<div class="col-md-1"></div>
-			<div class="col-md-2 nowrap text-center">	
-				Search for title: 
-			</div>	
+			<div class="col-md-2"></div>
 			<div class="col-md-3 nowrap  text-center">	
-				<input id="title_input" type="text" /><button id="title_btn">go</button>
+				<input id="title_input" placeholder="Search for title" type="text" /><button id="title_btn">go</button>
 			</div>	
-			<div class="col-md-2 nowrap text-center">	
-				Discover by genre: 
-			</div>	
+			<div class="col-md-2"></div>	
 			<div class="col-md-3 nowrap text-center">	
 				<select id="discover_by_genre">
-					<option> >> choose wisely </option>
+					<option> >> Discover by Genre << </option>
 					<option value="28">Action</option>
 					<option value="12">Adventure</option>
 					<option value="16">Animation</option>
@@ -74,7 +71,7 @@
 					<option value="37">Western</option>
 				</select>
 			</div>
-			<div class="col-md-1"></div>
+			<div class="col-md-2"></div>
 		</div>	
 
 		<div class="row"><div class="col-md-12"><p>&nbsp;</p></div></div>
@@ -98,7 +95,7 @@
 		<table><tr><td valign="top">
 			<img id="flix_img" src="" width="222px" />
 		</td><td id="flix_desc" valign="top"></td></tr></table>	
-		<p style="margin-top:22px;text-align:center;font-size:1.5em"><a href="#" id="closeFlix">click to close</a>
+		<p id="flix_close" style=""><a href="#">click to close</a>
 	</div>
 </div>
 
@@ -147,7 +144,7 @@ $(document).ready(function() {
 		populateTable(durl)
 	})	
 
-	$('#closeFlix').click(function() {
+	$('#flix_close').click(function() {
 		$('#flix_overlay').hide()
 	})
 
@@ -162,7 +159,7 @@ $(document).ready(function() {
 })
 
 function populateTable(url) {
-//	$.fn.dataTable.ext.errMode = 'none'
+	$.fn.dataTable.ext.errMode = 'none' // 4 debug
 	if ($.fn.DataTable.isDataTable('#tmdb_table')) {
 		tmdbTable.destroy()
 	}
