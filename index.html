@@ -22,9 +22,10 @@
 	#tmdb_table{display:none} 
 	#flix_overlay {position: fixed;display: none;width: 100%; height: 100%; top: 0; left: 0;right: 0;bottom: 0;background-color: rgba(0,0,0,0.7); z-index: 2; cursor: pointer}
 	#flix_data{ position: absolute;top: 50%;left: 50%;font-size:1.1em;color: white;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);text-align:center}
-	#flix_desc{text-align:left; padding-left:12px;}
-	#flix_close{margin-top:22px;text-align:center;font-size:1.5em}
+	#flix_desc{text-align:left; padding-left:12px;min-width:222px}
+	#flix_close{margin-top:22px;text-align:center;font-size:1.5em;margin-bottom:12px;}
 	#discover_by_genre{height:29px;width:270px}
+
 
 </style>
 </head>
@@ -35,8 +36,8 @@
 		<div class="row">
 			<div class="col-md-3"></div>
 			<div class="col-md-6 text-center">
-				<h2>TMDB demo for Global Gaming</h2>
-				<h4>Delivered by clearcrest</h4>
+				<h2>TMDB demo</h2>
+				<h4>searchable movie database interface</h4>
 			</div>	
 			<div class="col-md-3"></div>
 		</div>	
@@ -92,18 +93,23 @@
 	<div id="flix_data">
 		<h1 id="flix_title"></h1>
 		<h4 id="flix_release_date"></h4>
-		<table><tr><td valign="top">
-			<img id="flix_img" src="" width="222px" />
-		</td><td id="flix_desc" valign="top"></td></tr></table>	
-		<p id="flix_close" style=""><a href="#">click to close</a>
+		<div class="row">
+			<div class="col-md-6">
+				<img id="flix_img" src="" width="222px" />
+				<div id="flix_close" style=""><a href="#">click to close</a></div>
+			</div>	
+			<div class="col-md-6" id="flix_desc"></div>	
+		</div>	
 	</div>
 </div>
+
+<div id="vault" style="display:none"></div>
 
 <script>
 
 var myTMDBKey = 'fb3a898f7095987835b1b2d87249cefb',
 	imgRoot = 'http://image.tmdb.org/t/p/w300/',
-	maxAllowedHits = 40000,
+	maxAllowedHits = 4000000,  // high since discovery returns a lot
 	flix = [],
 	flixCompl = [],
 	tmdbTable = '',
@@ -199,6 +205,7 @@ function populateTable(url) {
 		}		
 	})		
 }
+
 
 function getGenres(ids) {
 	let i = ids.length,
