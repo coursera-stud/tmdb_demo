@@ -21,6 +21,32 @@
 	.text-center{text-align:center}
 	#tmdb_table{display:none} 
 
+	#flix_overlay {
+	    position: fixed; /* Sit on top of the page content */
+	    display: none; /* Hidden by default */
+	    width: 100%; /* Full width (cover the whole page) */
+	    height: 100%; /* Full height (cover the whole page) */
+	    top: 0; 
+	    left: 0;
+	    right: 0;
+	    bottom: 0;
+	    filter:blur();
+	    background-color: rgba(0,0,0,0.7); /* Black background with opacity */
+	    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+	    cursor: pointer; /* Add a pointer on hover */
+	}
+	#flix_data{
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    font-size:1.1em;
+	    color: white;
+	    transform: translate(-50%,-50%);
+	    -ms-transform: translate(-50%,-50%);
+	    text-align:center;
+	}
+	#flix_desc{text-align:left; padding-left:12px;}
+
 </style>
 </head>
 <body>
@@ -67,12 +93,21 @@
 
 	</div>	
 
-<div id="flix_dialog" title=""></div>
+<div id="flix_overlay">
+	<div id="flix_data">
+		<h1 id="flix_title"></h1>
+		<h4 id="flix_release_date"></h4>
+		<table><tr><td valign="top">
+			<img id="flix_img" src="" width="222px" />
+		</td><td id="flix_desc" valign="top"></td></tr></table>	
+		<p style="margin-top:22px;text-align:center;font-size:1.5em"><a href="#" id="closeFlix">click to close</a>
+	</div>
+</div>
 
 <script>
 
 var myTMDBKey = 'fb3a898f7095987835b1b2d87249cefb',
-	imgRoot = 'http://image.tmdb.org/t/p/',
+	imgRoot = 'http://image.tmdb.org/t/p/w300/',
 	maxAllowedHits = 400,
 	flix = [],
 	flixCompl = [],
@@ -90,6 +125,9 @@ $(document).ready(function() {
 		}
 	})	
 
+	// set focus to the element most likely to be used
+	$('#title_input').focus()
+
 	$('body').keydown(function(e) {
 		if (e.key == 'Enter' && $('#title_input').is(':focus')) {
 			$('#title_btn').click()
@@ -97,25 +135,28 @@ $(document).ready(function() {
 		if (e.key == 'Enter' && $('#genre_input').is(':focus')) {
 			$('#genre_btn').click()
 		}
+		if (e.key == 'Escape') {
+			$('#flix_overlay').hide()
+		}
 	})
 
 	$('#tmdb_table').on('click','a',function (e) {
 		id = e.currentTarget.hash.substring(1)
-		$('#flix_dialog').attr('title',flixCompl[id].title)
-		$('#flix_dialog').html('<img src />nnnn')
-		$('#flix_dialog').text('nnnn')
-		$('#flix_dialog').show()
-		$('#flix_dialog').dialog()
-
-
-		// TODO: popup/overlay that shows poster and description for the movie with the id 
-//		alert(flixCompl[id])
-//		console.log(flixCompl[id])
+		$('#flix_title').text(flixCompl[id][0])
+		$('#flix_release_date').text(flixCompl[id][1])
+		$('#flix_img').attr('src',imgRoot+flixCompl[id][2])
+		$('#flix_desc').text(flixCompl[id][3])
+		console.log(imgRoot+flixCompl[id][2])
+		$('#flix_overlay').show()
 	})
 
 	$('#discover_btn').click(function(e) {
 		// TODO: implement solution for genre discovery 
 	})	
+
+	$('#closeFlix').click(function() {
+		$('#flix_overlay').hide()
+	})
 
 	$('#title_btn').click(function(e) {
 		var input = $('#title_input').val(),
@@ -125,7 +166,8 @@ $(document).ready(function() {
 
 		flix = []
 		flixCompl = []
-		
+
+		// for debuggin'		
 //		$.fn.dataTable.ext.errMode = 'none'
 
 		if ($.fn.DataTable.isDataTable('#tmdb_table')) {
@@ -148,10 +190,10 @@ $(document).ready(function() {
 						data.results[len].vote_average
 					])
 					flixCompl[data.results[len].id] = [
+						data.results[len].title,
+						data.results[len].release_date,
 						data.results[len].poster_path,
-						data.results[len].overview,
-						data.results[len].genre_ids,
-						data.results[len].release_date
+						data.results[len].overview
 					]
 				}
 				$('#tmdb_table').show()
